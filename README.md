@@ -8,4 +8,6 @@ Pasta "Exercicio1" com a tarefa do modulo 1
 
 Pasta ExercicioModulo2 com tarefa do modulo 2
 
+Pasta ExercicioModulo3 com tarefa do modulo 3
+
 Pasta AtividadeVivencial1 com tarefa da vivencia do modulo 2
