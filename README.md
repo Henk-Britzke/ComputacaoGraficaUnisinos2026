@@ -11,3 +11,5 @@ Pasta ExercicioModulo2 com tarefa do modulo 2
 Pasta ExercicioModulo3 com tarefa do modulo 3
 
 Pasta AtividadeVivencial1 com tarefa da vivencia do modulo 2
+
+Pasta ExercicioModulo4 com tarefa do modulo 4
