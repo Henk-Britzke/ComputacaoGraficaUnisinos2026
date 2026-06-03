@@ -9,7 +9,7 @@ CAMERA:
 
 OBJETO:
 - `1/2/3` : ligar/desligar 1: luz principal, 2: luz preenchimento, 3: fundo
-- `W/A/S/D` : transladar o objeto no plano X/Z
+- `setas ←/↓/↑/→` : transladar o objeto no plano X/Z
 - `I/J` : transladar o objeto no eixo Y
 - `Z` : iniciar rotação contínua no eixo Z
 - `X` : iniciar rotação contínua no eixo X
