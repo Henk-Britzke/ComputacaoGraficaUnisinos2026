@@ -241,6 +241,11 @@ void printHelp()
     cout << "Z/X/C     : rotação\n";
     cout << "[]       : Escala uniforme maior|menor\n";
     cout << "ligar/desligar luz: tecla 1(principal) / tecla 2(preenchimento) / tecla 3 (fundo)\n";
+    cout << "TAB             : trocar objeto selecionado\n";
+    cout << "P               : adicionar ponto de trajetória\n";
+    cout << "T               : ativar/desativar trajetória\n";
+    cout << "O               : limpar pontos de trajetória\n";
+    cout << "L               : salvar trajetórias\n";
     cout << "ESC       : sair\n";
 }
 
@@ -265,7 +270,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Camera FPS", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Trajetoria", nullptr, nullptr);
     if (!window) {
         cerr << "Falha ao criar janela GLFW" << endl;
         glfwTerminate();
@@ -361,15 +366,36 @@ int main()
         ObjModel obj;
         obj.name = "Suzanne";
         obj.VAO = vao;
-        obj.textureID = textureID;
-        obj.textured = textured;
         obj.vertexCount = nVertices;
         obj.translation = glm::vec3(0.0f);
         obj.rotation = glm::vec3(0.0f);
         obj.scale = glm::vec3(1.0f);
         obj.color = glm::vec3(0.2f, 0.7f, 0.9f);
         obj.material = material;
+        obj.textureID = loadTexture("../assets/Modelos3D/Suzanne.png");
+        obj.textured = true;
+        
         sceneObjects.push_back(obj);
+    }
+
+    {
+        string path = "../assets/Modelos3D/Cube.obj";
+        int nVertices = 0;
+        GLuint textureID = 0;
+        bool textured = false;
+        MaterialInfo material;
+        GLuint vao = loadSimpleOBJ(path, nVertices, glm::vec3(0.9f, 0.3f, 0.3f), textureID, textured, material);
+        if (vao != 0 && nVertices > 0) {
+            ObjModel obj;
+            obj.name = "Cube";
+            obj.VAO = vao;
+            obj.vertexCount = nVertices;
+            obj.translation = glm::vec3(3.0f, 0.0f, 0.0f);
+            obj.rotation = glm::vec3(0.0f);
+            obj.scale = glm::vec3(1.0f);
+            obj.color = glm::vec3(0.9f, 0.3f, 0.3f);
+            sceneObjects.push_back(obj);
+        }
     }
 
     if (sceneObjects.empty()) {
@@ -798,24 +824,6 @@ GLuint loadSimpleOBJ(const string& filePATH, int& nVertices, const glm::vec3& co
         else if (word == "mtllib") {
             string mtlFile;
             ssline >> mtlFile;
-            if (!mtlFile.empty()) {
-                string objDirectory;
-                size_t lastSlash = filePATH.find_last_of("/\\");
-                if (lastSlash != string::npos) {
-                    objDirectory = filePATH.substr(0, lastSlash + 1);
-                }
-                string mtlPath = objDirectory.empty() ? mtlFile : objDirectory + mtlFile;
-                if (loadMTL(mtlPath, outMaterial) && !outMaterial.diffuseTexture.empty()) {
-                    string texturePath = objDirectory.empty() ? outMaterial.diffuseTexture : objDirectory + outMaterial.diffuseTexture;
-                    GLuint texID = loadTexture(texturePath);
-                    if (texID != 0) {
-                        outTextureID = texID;
-                        outTextured = true;
-                    }
-                }
-            }
-        } else if (word == "usemtl") {
-            // unsupported usemtl in this loader, keep current material
         } else if (word == "f")
 		 {
             while (ssline >> word) 
@@ -848,10 +856,6 @@ GLuint loadSimpleOBJ(const string& filePATH, int& nVertices, const glm::vec3& co
     }
 
     arqEntrada.close();
-
-    outTextureID = 0;
-    outTextured = false;
-    outMaterial = MaterialInfo();
 
     GLuint VBO, VAO;
     glGenBuffers(1, &VBO);
